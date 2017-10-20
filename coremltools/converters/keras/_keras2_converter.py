@@ -11,6 +11,7 @@ from ..._deps import HAS_KERAS2_TF as _HAS_KERAS2_TF
 
 if _HAS_KERAS2_TF:
     import keras as _keras
+    import keras_contrib as _keras_contrib
     from . import _layers2
     from . import _topology2
     _KERAS_LAYER_REGISTRY  = {
@@ -69,6 +70,7 @@ if _HAS_KERAS2_TF:
         
         _keras.applications.mobilenet.DepthwiseConv2D:_layers2.convert_convolution,
 
+        _keras_contrib.layers.normalization.InstanceNormalization: _layers2.convert_instancenorm
     }
     
 
