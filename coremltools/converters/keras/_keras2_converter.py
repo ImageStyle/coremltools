@@ -70,7 +70,10 @@ if _HAS_KERAS2_TF:
         
         _keras.applications.mobilenet.DepthwiseConv2D:_layers2.convert_convolution,
 
-        _keras_contrib.layers.normalization.InstanceNormalization: _layers2.convert_instancenorm
+        _keras_contrib.layers.normalization.InstanceNormalization: _layers2.convert_instancenorm,
+
+        # Convert lambda x : x * 150 + 255./2 using a coreml scale layer
+        _keras.layers.core.Lambda: _layers2.convert_lambda
     }
     
 

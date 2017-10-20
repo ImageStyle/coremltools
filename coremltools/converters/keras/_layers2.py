@@ -541,32 +541,21 @@ def convert_instancenorm(builder, layer, input_names, output_names, keras_layer)
     if keras_layer.center:
         beta = keras_layer.get_weights()[idx]
         idx += 1
-    mean = keras_layer.get_weights()[idx]
-    std = keras_layer.get_weights()[idx+1]
     
     gamma = _np.ones(mean.shape) if gamma is None else gamma
     beta = _np.zeros(mean.shape) if beta is None else beta
-
-    # compute adjusted parameters
-    variance = std * std
-    f = 1.0 / _np.sqrt(std + keras_layer.epsilon)
-    gamma1 = gamma*f
-    beta1 = beta - gamma*mean*f
-    mean[:] = 0.0 #mean
-    variance[:] = 1.0 - .00001 #stddev
+    epsilon = keras_layer.epsilon
 
     builder.add_batchnorm(
         name = layer,
         channels = nb_channels,
-        gamma = gamma1,
-        beta = beta1,
-        mean = mean,
-        variance = variance,
+        gamma = gamma,
+        beta = beta,
         input_name = input_name,
         output_name = output_name,
+        compute_mean_var = True,
         instance_normalization = True,
-        # TODO: get epsilon from layer?
-        epsilon = 1e-3)
+        epsilon = epsilon)
 
 
 def convert_flatten(builder, layer, input_names, output_names, keras_layer):
@@ -1183,3 +1172,17 @@ def convert_repeat_vector(builder, layer, input_names, output_names, keras_layer
 def default_skip(builder, layer, input_names, output_names, keras_layer):
     """ Layers that can be skipped (because they are train time only. """
     return
+
+
+def convert_lambda(builder, layer, input_names, output_names, keras_layer):
+    input_name, output_name = (input_names[0], output_names[0])
+    input_shape = keras_layer.input_shape
+
+    builder.add_scale(name = layer,
+            W = 150,
+            b = int(255./2),
+            has_bias = True,
+            input_name = input_name,
+            output_name = output_name)
+
+
