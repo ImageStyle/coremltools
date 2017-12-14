@@ -12,6 +12,12 @@ from ..._deps import HAS_KERAS2_TF as _HAS_KERAS2_TF
 if _HAS_KERAS2_TF:
     import keras as _keras
     import keras_contrib as _keras_contrib
+
+    # Import custom style transfer layers
+    import sys
+    sys.path.insert(0, '../../../../StyleTransfer')
+    from transform import ReflectionPadding2D
+
     from . import _layers2
     from . import _topology2
     _KERAS_LAYER_REGISTRY  = {
@@ -73,7 +79,9 @@ if _HAS_KERAS2_TF:
         _keras_contrib.layers.normalization.InstanceNormalization: _layers2.convert_instancenorm,
 
         # Convert lambda x : x * 150 + 255./2 using a coreml scale layer
-        _keras.layers.core.Lambda: _layers2.convert_lambda
+        _keras.layers.core.Lambda: _layers2.convert_lambda,
+
+        ReflectionPadding2D: _layers2.convert_reflection_padding
     }
     
 

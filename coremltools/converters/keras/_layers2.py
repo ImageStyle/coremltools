@@ -1186,3 +1186,17 @@ def convert_lambda(builder, layer, input_names, output_names, keras_layer):
             output_name = output_name)
 
 
+def convert_reflection_padding(builder, layer, input_names, output_names, keras_layer):
+    input_name, output_name = (input_names[0], output_names[0])
+    input_shape = keras_layer.input_shape
+
+    (top, bottom), (left, right) = keras_layer.padding
+
+    builder.add_padding(name = layer,
+            left = left,
+            right = right,
+            top = top,
+            bottom = bottom,
+            input_name = input_name,
+            output_name = output_name,
+            padding_type = 'reflection')
