@@ -1190,7 +1190,10 @@ def convert_reflection_padding(builder, layer, input_names, output_names, keras_
     input_name, output_name = (input_names[0], output_names[0])
     input_shape = keras_layer.input_shape
 
-    (top, bottom), (left, right) = keras_layer.padding
+    _, w, h, _ = input_shape
+
+    top = bottom = int(w * .1)
+    left = right = int(h * .1)
 
     builder.add_padding(name = layer,
             left = left,
